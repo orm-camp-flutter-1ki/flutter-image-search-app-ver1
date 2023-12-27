@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:image_search_app/data/model/image_item.dart';
+import 'package:image_search_app/data/repository/image_item_repository.dart';
 import 'package:image_search_app/ui/widget/image_item_widget.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  final repository = ImageItemRepository();
+
+  var imageItems = [];
+
+  Future<void> searchImage(String query) async {
+    imageItems = await repository.getImageItems(query);
+
+    // 강제 UI 업데이트
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,22 +48,21 @@ class MainScreen extends StatelessWidget {
                     ),
                   ),
                   hintText: 'Search',
-                  suffixIcon: const Icon(
-                    Icons.search,
-                    color: Color(0xFF4FB6B2), // 외곽선 컬러 설정
+                  suffixIcon: IconButton(
+                    icon: const Icon(
+                      Icons.search,
+                      color: Color(0xFF4FB6B2), // 외곽선 컬러 설정
+                    ),
+                    onPressed: () => searchImage('사과'),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
               Expanded(
                 child: GridView.builder(
-                  itemCount: 10,
+                  itemCount: imageItems.length,
                   itemBuilder: (context, index) {
-                    final imageItem = ImageItem(
-                      imageUrl:
-                          'https://cdn.pixabay.com/photo/2017/09/26/13/21/apples-2788599_150.jpg',
-                      tags: 'apple',
-                    );
+                    final imageItem = imageItems[index];
                     return ImageItemWidget(imageItem: imageItem);
                   },
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
