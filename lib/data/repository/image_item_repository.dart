@@ -1,6 +1,29 @@
+import 'package:image_search_app/data/data_source/pixabay_api.dart';
+import 'package:image_search_app/data/mapper/image_mapper.dart';
+
 import '../model/image_item.dart';
 
-class MockImageItemRepository {
+abstract interface class ImageItemRepository {
+  Future<List<ImageItem>> getImageItems(String query);
+}
+
+class PixabayImageItemRepository implements ImageItemRepository {
+  final _api = PixabayApi();
+
+  @override
+  Future<List<ImageItem>> getImageItems(String query) async {
+    final dto = await _api.getImagesResult(query);
+
+    if (dto.hits == null) {
+      return [];
+    }
+
+    return dto.hits!.map((e) => e.toImageItem()).toList();
+  }
+}
+
+class MockImageItemRepository implements ImageItemRepository {
+  @override
   Future<List<ImageItem>> getImageItems(String query) async {
     await Future.delayed(const Duration(seconds: 1));
 
