@@ -13,24 +13,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final searchTextEditingController = TextEditingController();
 
-  final repository = PixabayImageItemRepository();
-
-  List<ImageItem> imageItems = [];
-  bool isLoading = false;
-
-  Future<void> searchImage(String query) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    imageItems = await repository.getImageItems(query);
-
-    // 강제 UI 업데이트
-    setState(() {
-      isLoading = false;
-    });
-  }
-
   @override
   void dispose() {
     searchTextEditingController.dispose();
@@ -70,29 +52,40 @@ class _MainScreenState extends State<MainScreen> {
                       Icons.search,
                       color: Color(0xFF4FB6B2), // 외곽선 컬러 설정
                     ),
-                    onPressed: () =>
-                        searchImage(searchTextEditingController.text),
+                    onPressed: () {
+                      // 강제로 화면 다시 그리기
+                      setState(() {});
+                    },
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : Expanded(
-                      child: GridView.builder(
-                        itemCount: imageItems.length,
-                        itemBuilder: (context, index) {
-                          final imageItem = imageItems[index];
-                          return ImageItemWidget(imageItem: imageItem);
-                        },
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 32,
-                          mainAxisSpacing: 32,
-                        ),
+              FutureBuilder<List<ImageItem>>(
+                future: PixabayImageItemRepository()
+                    .getImageItems(searchTextEditingController.text),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  final imageItems = snapshot.data!;
+                  return Expanded(
+                    child: GridView.builder(
+                      itemCount: imageItems.length,
+                      itemBuilder: (context, index) {
+                        final imageItem = imageItems[index];
+                        return ImageItemWidget(imageItem: imageItem);
+                      },
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 32,
+                        mainAxisSpacing: 32,
                       ),
                     ),
+                  );
+                },
+              ),
             ],
           ),
         ),
