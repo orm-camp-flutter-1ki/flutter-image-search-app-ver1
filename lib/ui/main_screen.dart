@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:image_search_app/data/model/image_item.dart';
-import 'package:image_search_app/data/repository/image_item_repository.dart';
+import 'package:image_search_app/ui/main_view_model.dart';
 import 'package:image_search_app/ui/widget/image_item_widget.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,23 +12,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final searchTextEditingController = TextEditingController();
 
-  final repository = PixabayImageItemRepository();
+  final viewModel = MainViewModel();
 
-  List<ImageItem> imageItems = [];
-  bool isLoading = false;
-
-  Future<void> searchImage(String query) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    imageItems = await repository.getImageItems(query);
-
-    // 강제 UI 업데이트
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   @override
   void dispose() {
@@ -70,19 +54,28 @@ class _MainScreenState extends State<MainScreen> {
                       Icons.search,
                       color: Color(0xFF4FB6B2), // 외곽선 컬러 설정
                     ),
-                    onPressed: () =>
-                        searchImage(searchTextEditingController.text),
+                    onPressed: () async {
+                      setState(() {
+                        viewModel.isLoading = true;
+                      });
+
+                      await viewModel.searchImage(searchTextEditingController.text);
+
+                      setState(() {
+                        viewModel.isLoading = false;
+                      });
+                    },
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              isLoading
+              viewModel.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : Expanded(
                       child: GridView.builder(
-                        itemCount: imageItems.length,
+                        itemCount: viewModel.imageItems.length,
                         itemBuilder: (context, index) {
-                          final imageItem = imageItems[index];
+                          final imageItem = viewModel.imageItems[index];
                           return ImageItemWidget(imageItem: imageItem);
                         },
                         gridDelegate:
