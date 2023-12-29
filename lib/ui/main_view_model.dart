@@ -1,19 +1,26 @@
+import 'dart:async';
 import 'dart:collection';
 
 import '../data/model/image_item.dart';
 import '../data/repository/image_item_repository.dart';
 
-class MainViewModel {
-  final repository = PixabayImageItemRepository();
+final class MainViewModel {
+  final _repository = PixabayImageItemRepository();
 
   List<ImageItem> _imageItems = [];
-
-  // UnmodifiableListView 수정 안 되는 리스트
   List<ImageItem> get imageItems => List.unmodifiable(_imageItems);
 
-  bool isLoading = false;
+  final _loadingController = StreamController<bool>();
+  Stream<bool> get isLoadingStream => _loadingController.stream;
+
 
   Future<void> searchImage(String query) async {
-    _imageItems = await repository.getImageItems(query);
+    // 화면갱신
+    _loadingController.add(true);
+
+    _imageItems = await _repository.getImageItems(query);
+
+    // 화면갱신
+    _loadingController.add(false);
   }
 }

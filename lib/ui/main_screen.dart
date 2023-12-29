@@ -14,7 +14,6 @@ class _MainScreenState extends State<MainScreen> {
 
   final viewModel = MainViewModel();
 
-
   @override
   void dispose() {
     searchTextEditingController.dispose();
@@ -55,23 +54,24 @@ class _MainScreenState extends State<MainScreen> {
                       color: Color(0xFF4FB6B2), // 외곽선 컬러 설정
                     ),
                     onPressed: () async {
-                      setState(() {
-                        viewModel.isLoading = true;
-                      });
-
-                      await viewModel.searchImage(searchTextEditingController.text);
-
-                      setState(() {
-                        viewModel.isLoading = false;
-                      });
+                      await viewModel
+                          .searchImage(searchTextEditingController.text);
                     },
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              viewModel.isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : Expanded(
+              StreamBuilder<bool>(
+                  initialData: false,
+                  stream: viewModel.isLoadingStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.data! == true) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return Expanded(
                       child: GridView.builder(
                         itemCount: viewModel.imageItems.length,
                         itemBuilder: (context, index) {
@@ -85,7 +85,8 @@ class _MainScreenState extends State<MainScreen> {
                           mainAxisSpacing: 32,
                         ),
                       ),
-                    ),
+                    );
+                  }),
             ],
           ),
         ),
