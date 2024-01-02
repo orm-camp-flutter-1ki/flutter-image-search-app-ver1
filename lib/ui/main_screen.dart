@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_search_app/ui/main_view_model.dart';
 import 'package:image_search_app/ui/widget/image_item_widget.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,8 +13,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final searchTextEditingController = TextEditingController();
 
-  final viewModel = MainViewModel();
-
 
   @override
   void dispose() {
@@ -23,6 +22,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<MainViewModel>();
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -54,16 +54,8 @@ class _MainScreenState extends State<MainScreen> {
                       Icons.search,
                       color: Color(0xFF4FB6B2), // 외곽선 컬러 설정
                     ),
-                    onPressed: () async {
-                      setState(() {
-                        viewModel.isLoading = true;
-                      });
-
-                      await viewModel.searchImage(searchTextEditingController.text);
-
-                      setState(() {
-                        viewModel.isLoading = false;
-                      });
+                    onPressed: () {
+                      viewModel.searchImage(searchTextEditingController.text);
                     },
                   ),
                 ),
