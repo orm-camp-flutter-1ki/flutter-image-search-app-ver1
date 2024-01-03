@@ -13,8 +13,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final searchTextEditingController = TextEditingController();
 
-  final viewModel = MainViewModel();
-
   @override
   void dispose() {
     searchTextEditingController.dispose();
