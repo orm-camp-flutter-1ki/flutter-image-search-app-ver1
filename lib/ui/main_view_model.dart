@@ -9,10 +9,7 @@ final class MainViewModel extends ChangeNotifier {
   final ImageItemRepository _repository;
 
   // 얘만 변수
-  MainState _state = MainState(
-    imageItems: List.unmodifiable([]),
-    isLoading: false,
-  );
+  MainState _state = const MainState();
 
   MainState get state => _state;
 
@@ -25,11 +22,12 @@ final class MainViewModel extends ChangeNotifier {
     _state = state.copyWith(isLoading: true);
     notifyListeners();
 
+    final results = (await _repository.getImageItems(query)).take(3).toList();
+
     // 화면갱신
     _state = state.copyWith(
       isLoading: false,
-      imageItems: List.unmodifiable(
-          (await _repository.getImageItems(query)).take(3).toList()),
+      imageItems: results,
     );
     notifyListeners();
   }
