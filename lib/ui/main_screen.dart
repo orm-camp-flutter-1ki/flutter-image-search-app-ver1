@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_search_app/ui/main_view_model.dart';
 import 'package:image_search_app/ui/widget/image_item_widget.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -22,6 +23,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<MainViewModel>();
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -61,17 +63,11 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              StreamBuilder<bool>(
-                  initialData: false,
-                  stream: viewModel.isLoadingStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.data! == true) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-
-                    return Expanded(
+              viewModel.isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Expanded(
                       child: GridView.builder(
                         itemCount: viewModel.imageItems.length,
                         itemBuilder: (context, index) {
@@ -85,8 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                           mainAxisSpacing: 32,
                         ),
                       ),
-                    );
-                  }),
+                    ),
             ],
           ),
         ),
