@@ -17,11 +17,11 @@ void main() {
   test('이미지는 3개만 반환되어야 한다', () async {
     final viewModel = getIt<MainViewModel>();
 
-    expect(viewModel.imageItems.length, 0);
+    expect(viewModel.state.imageItems.length, 0);
 
     await viewModel.searchImage('query');
 
-    expect(viewModel.imageItems.length, 3);
+    expect(viewModel.state.imageItems.length, 3);
   });
 }
 
