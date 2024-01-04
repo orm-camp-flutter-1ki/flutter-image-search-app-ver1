@@ -17,18 +17,24 @@ final class MainViewModel extends ChangeNotifier {
     required ImageItemRepository repository,
   }) : _repository = repository;
 
-  Future<void> searchImage(String query) async {
+  Future<bool> searchImage(String query) async {
     // 화면갱신
     _state = state.copyWith(isLoading: true);
     notifyListeners();
 
-    final results = (await _repository.getImageItems(query)).take(3).toList();
+    try {
+      final results = (await _repository.getImageItems(query)).take(3).toList();
 
-    // 화면갱신
-    _state = state.copyWith(
-      isLoading: false,
-      imageItems: results,
-    );
-    notifyListeners();
+      // 화면갱신
+      _state = state.copyWith(
+        isLoading: false,
+        imageItems: results,
+      );
+      notifyListeners();
+      return true;
+    } catch (e) {
+      // SnackBar or Dialog
+      return false;
+    }
   }
 }

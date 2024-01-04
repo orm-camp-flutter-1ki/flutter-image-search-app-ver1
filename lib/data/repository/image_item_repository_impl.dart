@@ -9,12 +9,12 @@ class ImageItemRepositoryImpl implements ImageItemRepository {
 
   @override
   Future<List<ImageItem>> getImageItems(String query) async {
-    final dto = await _api.getImagesResult(query);
+      final dto = await _api.getImagesResult(query);
 
-    if (dto.hits == null) {
-      return [];
-    }
+      if (dto.hits == null) {
+        return [];
+      }
 
-    return dto.hits!.map((e) => e.toImageItem()).toList();
+      return dto.hits!.map((e) => e.toImageItem()).toList();
   }
 }

@@ -55,8 +55,18 @@ class _MainScreenState extends State<MainScreen> {
                       color: Color(0xFF4FB6B2), // 외곽선 컬러 설정
                     ),
                     onPressed: () async {
-                      await viewModel
+                      final result = await viewModel
                           .searchImage(searchTextEditingController.text);
+
+                      if (result == false) {
+                        const snackBar = SnackBar(
+                          content: Text('Yay! Bug!'),
+                        );
+
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      }
                     },
                   ),
                 ),
