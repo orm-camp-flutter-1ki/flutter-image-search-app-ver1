@@ -1,25 +1,13 @@
-sealed class Result<T> {
-  factory Result.success(T data) = Success;
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
 
-  factory Result.error(Exception e) = Error;
+part 'result.freezed.dart';
 
-  factory Result.loading() = Loading;
-}
-
-class Success<T> implements Result<T> {
-  final T data;
-
-  Success(this.data);
-}
-
-class Error<T> implements Result<T> {
-  final Exception e;
-
-  Error(this.e);
-}
-
-class Loading<T> implements Result<T> {
-  Loading();
+@freezed
+sealed class Result<T> with _$Result<T> {
+  const factory Result.success(T data) = Success;
+  const factory Result.error(Exception e) = Error;
+  const factory Result.loading() = Loading;
 }
 
 void main() {
