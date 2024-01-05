@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:image_search_app/core/result.dart';
-import 'package:image_search_app/data/model/image_item.dart';
-import 'package:image_search_app/ui/main_event.dart';
+import 'package:image_search_app/domain/model/image_item.dart';
+import 'package:image_search_app/domain/use_case/search_image_use_case.dart';
 
-import '../data/repository/image_item_repository.dart';
+import 'main_event.dart';
 import 'main_state.dart';
 
 final class MainViewModel extends ChangeNotifier {
-  final ImageItemRepository _repository;
+  final SearchImageUseCase _searchImageUseCase;
 
   // 얘만 변수
   MainState _state = const MainState();
@@ -21,22 +21,22 @@ final class MainViewModel extends ChangeNotifier {
   Stream<MainEvent> get eventStream => _eventController.stream;
 
   MainViewModel({
-    required ImageItemRepository repository,
-  }) : _repository = repository;
+    required SearchImageUseCase searchImageUseCase,
+  }) : _searchImageUseCase = searchImageUseCase;
 
   Future<void> searchImage(String query) async {
     // 화면갱신
     _state = state.copyWith(isLoading: true);
     notifyListeners();
 
-    final result = await _repository.getImageItems(query);
+    final result = await _searchImageUseCase.execute(query);
 
     switch (result) {
       case Success<List<ImageItem>>():
         // 화면갱신
         _state = state.copyWith(
           isLoading: false,
-          imageItems: result.data.take(3).toList(),
+          imageItems: result.data,
         );
         notifyListeners();
         _eventController.add(const MainEvent.showSnackBar('성공!!'));

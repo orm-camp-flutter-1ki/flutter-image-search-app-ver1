@@ -1,6 +1,6 @@
 import '../../core/result.dart';
-import '../model/image_item.dart';
-import 'image_item_repository.dart';
+import '../../domain/model/image_item.dart';
+import '../../domain/repository/image_item_repository.dart';
 
 class MockImageItemRepositoryImpl implements ImageItemRepository {
   @override

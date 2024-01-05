@@ -2,8 +2,8 @@ import 'package:image_search_app/data/mapper/image_mapper.dart';
 
 import '../../core/result.dart';
 import '../data_source/pixabay_api.dart';
-import '../model/image_item.dart';
-import 'image_item_repository.dart';
+import '../../domain/model/image_item.dart';
+import '../../domain/repository/image_item_repository.dart';
 
 class ImageItemRepositoryImpl implements ImageItemRepository {
   final _api = PixabayApi();

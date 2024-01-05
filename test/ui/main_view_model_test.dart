@@ -1,18 +1,30 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_search_app/core/result.dart';
-import 'package:image_search_app/data/model/image_item.dart';
-import 'package:image_search_app/data/repository/image_item_repository.dart';
+import 'package:image_search_app/data/repository/star_repository_impl.dart';
+import 'package:image_search_app/domain/model/image_item.dart';
+import 'package:image_search_app/domain/repository/image_item_repository.dart';
 import 'package:image_search_app/di/di_setup.dart';
-import 'package:image_search_app/ui/main_view_model.dart';
+import 'package:image_search_app/domain/repository/star_repository.dart';
+import 'package:image_search_app/domain/use_case/search_image_use_case.dart';
+import 'package:image_search_app/presentation/main_view_model.dart';
 
 void main() {
   // 모든 테스트 시작할 때 호출 되는 부분
   setUp(() {
+
     getIt.registerSingleton<ImageItemRepository>(MockRepository());
+    getIt.registerSingleton<StarRepository>(StarRepositoryImpl());
+
+    getIt.registerSingleton<SearchImageUseCase>(
+      SearchImageUseCase(
+        imageItemRepository: getIt<ImageItemRepository>(),
+        starRepository: getIt<StarRepository>(),
+      ),
+    );
 
     // viewModel : factory
     getIt.registerFactory<MainViewModel>(
-        () => MainViewModel(repository: getIt<ImageItemRepository>()));
+            () => MainViewModel(searchImageUseCase: getIt<SearchImageUseCase>()));
   });
 
   test('이미지는 3개만 반환되어야 한다', () async {

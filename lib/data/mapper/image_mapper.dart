@@ -1,6 +1,6 @@
 import 'package:image_search_app/data/dto/pixabay_dto.dart';
 
-import '../model/image_item.dart';
+import '../../domain/model/image_item.dart';
 
 extension DtoToModel on Hits {
   ImageItem toImageItem() {
