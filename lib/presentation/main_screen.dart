@@ -8,7 +8,9 @@ import 'main_view_model.dart';
 import 'widget/image_item_widget.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final String title;
+
+  const MainScreen({super.key, required this.title});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -51,6 +53,7 @@ class _MainScreenState extends State<MainScreen> {
     final viewModel = context.watch<MainViewModel>();
     final state = viewModel.state;
     return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(32.0),

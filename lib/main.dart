@@ -3,7 +3,7 @@ import 'package:image_search_app/di/di_setup.dart';
 import 'package:image_search_app/routes.dart';
 
 void main() {
-  diSetup();
+  diSetup(environment: Environment.prod);
   runApp(const MyApp());
 }
 

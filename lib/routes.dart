@@ -12,7 +12,7 @@ final router = GoRouter(
       path: '/',
       builder: (context, state) => ChangeNotifierProvider(
         create: (_) => getIt<MainViewModel>(),
-        child: const MainScreen(),
+        child: MainScreen(title: getIt<String>(instanceName: 'title')),
       ),
     ),
   ],
